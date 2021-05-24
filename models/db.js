@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-const url = 'mongodb://localhost:27017/Diary_App';
-
+const url = process.env.mongourl;
 const options = {
 	useUnifiedTopology: true,
 	useNewUrlParser: true,
