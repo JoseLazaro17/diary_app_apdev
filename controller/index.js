@@ -85,46 +85,42 @@ const rendFunctions = {
 	},
 
 	postSignUp: function (req, res) {
-		var email = helper.sanitize(req.body.email);
-		var password = helper.sanitize(req.body.password);
-		var fName = helper.sanitize(req.body.fName);
-		var lName = helper.sanitize(req.body.lName);
-		var password = helper.sanitize(req.body.password);
-		var bio = helper.sanitize(req.body.bio);
+        var email = helper.sanitize(req.body.email);
+        var password = helper.sanitize(req.body.password);
+        var fName = helper.sanitize(req.body.fName);
+        var lName = helper.sanitize(req.body.lName);
+        var password = helper.sanitize(req.body.password);
+        var bio = helper.sanitize(req.body.bio);
 
-		db.findOne(Profile, { email: email }, '', function (user) {
-			if (user || password != req.body.confirm) {
-				console.log('ERROR FOUND' + user.email + ' = ' + email);
-				res.render('signup', {
-					input: req.body,
-					loginErrorMessage: user.email + 'already exists',
-				});
-			} else {
-				console.log('Insert ' + email);
-				bcrypt.hash(password, saltRounds, function (err, hash) {
-					var user = {
-						_id: new mongoose.Types.ObjectId(),
-						email: email,
-						password: hash,
-						fName: fName,
-						lName: lName,
-						bio: bio,
-						avatar: {
-							data: fs.readFileSync(req.file.path).toString('base64'),
-							contentType: req.file.mimetype,
-						},
-					};
-					db.insertOne(Profile, user, function (flag) {
-						console.log(req.session);
-						if (flag) {
-							req.session.user = user._id;
-						}
-					});
-					res.redirect('/');
-				});
-			}
-		});
-	},
+        db.findOne(Profile, { email: email }, '', function (user) {
+            if (user || password != req.body.confirm) {
+                console.log('ERROR FOUND' + user.email + ' = ' + email);
+                res.render('signup', {
+                    input: req.body,
+                    loginErrorMessage: user.email + 'already exists',
+                });
+            } else {
+                console.log('Insert ' + email);
+                bcrypt.hash(password, saltRounds, function (err, hash) {
+                    var user = {
+                        _id: new mongoose.Types.ObjectId(),
+                        email: email,
+                        password: hash,
+                        fName: fName,
+                        lName: lName,
+                        bio: bio,
+                    };
+                    db.insertOne(Profile, user, function (flag) {
+                        console.log(req.session);
+                        if (flag) {
+                            req.session.user = user._id;
+                        }
+                    });
+                    res.redirect('/');
+                });
+            }
+        });
+    },
 
 	getProfile: async function (req, res) {
 		var email = req.params.email;
